@@ -9,7 +9,7 @@ from sqlalchemy import create_engine, func
 
 from flask import Flask, jsonify
 
-######################################################
+
 # Database Setup
 engine = create_engine("sqlite:///Resources/hawaii.sqlite")
 
@@ -21,7 +21,6 @@ Base.prepare(engine, reflect=True)
 Measurement = Base.classes.measurement
 Station = Base.classes.station
 
-################################
 session = Session(engine)
 
 # find the last date in the database
@@ -31,12 +30,12 @@ last_date = session.query(Measurement.date).order_by(Measurement.date.desc()).fi
 query_date = dt.date(2017,8,23) - dt.timedelta(days=365)
 
 session.close()
-################################
+
 
 # Create an app
 app = Flask(__name__)
 
-################################
+
 # Flask Routes
 # Define what to do when user hits the index route
 @app.route("/")
@@ -55,10 +54,10 @@ def home():
         f"The list of temprture observations from a year from the last data point:<br/>"
         f"/api/v1.0/tobs<br/>"
         f"<br/>"
-        f"Min, Max. and Avg. temperatures for given start date: (please use 'yyyy-mm-dd' format):<br/>"
+        f"Min, Max. and Avg. temperatures for given start date: (please use 'yyyy-mm-dd' format for the date):<br/>"
         f"/api/v1.0/min_max_avg/&lt;start date&gt;<br/>"
         f"<br/>"
-        f"Min. Max. and Avg. tempratures for given start and end date: (please use 'yyyy-mm-dd'/'yyyy-mm-dd' format for start and end values):<br/>"
+        f"Min. Max. and Avg. tempratures for given start and end date: (please use 'yyyy-mm-dd'/'yyyy-mm-dd' format for start and end dates):<br/>"
         f"/api/v1.0/min_max_avg/&lt;start date&gt;/&lt;end date&gt;<br/>"
         f"<br/>"
     )
@@ -117,7 +116,6 @@ def tobs():
     
     """Return a JSON list of Temperature Observations (tobs) for the previous year."""
     # query tempratures from a year from the last data point. 
-    #query_date  is "2016-08-23" for the last year query
     results = session.query(Measurement.tobs, Measurement.date).filter(Measurement.date >= query_date).all()
 
     session.close()
@@ -163,7 +161,7 @@ def start(start):
     # jsonify the result
     return jsonify(t_list)
 
-##################################################################
+
 @app.route("/api/v1.0/min_max_avg/<start>/<end>")
 def start_end(start, end):
     # create session link
