@@ -32,32 +32,32 @@ query_date = dt.date(2017,8,23) - dt.timedelta(days=365)
 session.close()
 
 
-# Create an app
+# create an app
 app = Flask(__name__)
 
 
 # Flask Routes
-# Define what to do when user hits the index route
+# index things
 @app.route("/")
 def home():
     """List all available api routes."""
     return(
         f"Welcome to Hawaii Climate Page<br/> "
-        f"Available Routes:<br/>"
+        f"Routes:<br/>"
         f"<br/>"  
-        f"The list of precipitation data with dates:<br/>"
+        f"List of precipitation data with dates:<br/>"
         f"/api/v1.0/precipitation<br/>"
         f"<br/>"
-        f"The list of stations and names:<br/>"
+        f"List of stations and names:<br/>"
         f"/api/v1.0/stations<br/>"
         f"<br/>"
-        f"The list of temprture observations from a year from the last data point:<br/>"
+        f"List of temprture observations from a year from the last data point:<br/>"
         f"/api/v1.0/tobs<br/>"
         f"<br/>"
-        f"Min, Max. and Avg. temperatures for given start date: (please use 'yyyy-mm-dd' format for the date):<br/>"
+        f"Min, Max. and Avg. temperatures for start date: (please use 'yyyy-mm-dd' format for the date):<br/>"
         f"/api/v1.0/min_max_avg/&lt;start date&gt;<br/>"
         f"<br/>"
-        f"Min. Max. and Avg. tempratures for given start and end date: (please use 'yyyy-mm-dd'/'yyyy-mm-dd' format for start and end dates):<br/>"
+        f"Min. Max. and Avg. tempratures for start and end date: (please use 'yyyy-mm-dd'/'yyyy-mm-dd' format for start and end dates):<br/>"
         f"/api/v1.0/min_max_avg/&lt;start date&gt;/&lt;end date&gt;<br/>"
         f"<br/>"
     )
@@ -65,16 +65,16 @@ def home():
 # create precipitation route
 @app.route("/api/v1.0/precipitation")
 def precipitation():
-    # Create the session link
+    # create the session link
     session = Session(engine)
 
     """Return the dictionary for date and precipitation info"""
-    # Query precipitation and date values 
+    # precipitation and date values 
     results = session.query(Measurement.date, Measurement.prcp).all()
         
     session.close()
     
-    # Create a dictionary as date the key and prcp as the value
+    # create a dictionary as date the key and prcp as the value
     precipitation = []
     for result in results:
         r = {}
@@ -87,16 +87,16 @@ def precipitation():
 # create stations route    
 @app.route("/api/v1.0/stations")
 def stations():
-    # Create the session link
+    # create the session link
     session = Session(engine)
     
     """Return a JSON list of stations from the dataset."""
-    # Query data to get stations list
+    # data to get stations list
     results = session.query(Station.station, Station.name).all()
     
     session.close()
 
-    # Convert list of tuples into list of dictionaries for each station and name
+    # convert list of tuples into list of dictionaries for each station and name
     station_list = []
     for result in results:
         r = {}
@@ -115,7 +115,7 @@ def tobs():
     session = Session(engine)
     
     """Return a JSON list of Temperature Observations (tobs) for the previous year."""
-    # query tempratures from a year from the last data point. 
+    # tempratures from a year from the last data point. 
     results = session.query(Measurement.tobs, Measurement.date).filter(Measurement.date >= query_date).all()
 
     session.close()
@@ -143,12 +143,12 @@ def start(start):
     # take any date and convert to yyyy-mm-dd format for the query
     start_dt = dt.datetime.strptime(start, '%Y-%m-%d')
 
-    # query data for the start date value
+    # data for the start date value
     results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date >= start_dt).all()
 
     session.close()
 
-    # Create a list to hold results
+    # create a list to hold results
     t_list = []
     for result in results:
         r = {}
@@ -173,12 +173,12 @@ def start_end(start, end):
     start_dt = dt.datetime.strptime(start, '%Y-%m-%d')
     end_dt = dt.datetime.strptime(end, "%Y-%m-%d")
 
-    # query data for the start date value
+    # data for the start date value
     results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date >= start_dt).filter(Measurement.date <= end_dt)
 
     session.close()
 
-    # Create a list to hold results
+    # create a list to hold results
     t_list = []
     for result in results:
         r = {}
